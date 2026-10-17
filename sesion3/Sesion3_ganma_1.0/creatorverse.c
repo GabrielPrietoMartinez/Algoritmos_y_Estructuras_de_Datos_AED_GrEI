@@ -294,3 +294,59 @@ void _splitByComma(char *cadena, TCOLA *cola) {
 void _strip_line(char *linea) {
     linea[strcspn(linea, "\r\n")] = 0;
 }
+
+
+void escribirRetos(FILE *fp, TCOLA cola){
+    TIPOELEMENTOCOLA reto;
+    TCOLA aux;
+    if (esVaciaCola(cola)) {
+        fprintf(fp, "-");
+        return;
+    }
+    crearCola(&aux);
+    int pestillo = 1;
+    while (!esVaciaCola(cola)){
+        reto = primeroCola(cola);
+        if(pestillo == 0){
+            fprintf(fp, ",");
+        }
+        pestillo = 0;
+        fprintf(fp, "%s:%d", reto.titulo, reto.dificultad);
+        insertarCola(&aux, reto);
+        suprimirCola(&cola );
+    }
+     while (!esVaciaCola(aux)) {
+        insertarCola(&cola, primeroCola(aux));
+        suprimirCola(&aux);
+    }
+    destruirCola(&aux);
+
+
+}
+
+
+void guardarPreorden(TABB A, FILE *fp) {
+    TIPOELEMENTOABB c;
+
+    if (esAbbVacio(A)) {
+        return;
+    }
+    leerElementoAbb(A, &c);
+    fprintf(fp, "%s|%u|%s|%ld|%d|", c.alias, c.categoria, c.colectivo, c.seguidores, c.verificado);
+    escribirRetos(fp, c.cola_retos);
+    fprintf(fp, "|%s|\n", c.descripcion);
+
+    guardarPreorden(izqAbb(A), fp);
+    guardarPreorden(derAbb(A), fp);
+}
+
+void guardarEnFichero(TABB A, char* archivo){
+    FILE *fp = fopen(archivo, "wt");
+    if (fp == NULL) {
+        perror("Error abriendo el archivo para escribir");
+        return;
+    }
+    guardarPreorden(A, fp);
+    fclose(fp);
+    
+}

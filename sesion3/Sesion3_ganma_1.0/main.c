@@ -40,6 +40,9 @@ int main(int argc, char *argv[]) {
         }
     } while (opcion != 'S');
 
+    //guardamos las modificaciones en el fichero
+    guardarEnFichero(base_datos, argv[2]);
+
     // 3. Liberacion de memoria de todo el arbol al salir
    // destruir_creadores(&base_datos);
 

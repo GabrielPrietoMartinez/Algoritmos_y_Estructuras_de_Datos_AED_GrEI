@@ -29,5 +29,10 @@ void listarCreadores(TABB A);
  */
 void eliminarCreador(TABB *A);
 
+
+//funcion para guardar el arbol en el fichero txt
+
+void guardarEnFichero(TABB A, char* archivo);
+
 #endif /* CREATORVERSE_H */
 
