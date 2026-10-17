@@ -135,7 +135,7 @@ void anhadirCreador(TABB *A){
 
     while (strcmp(reto.titulo, "fin") != 0) {
         do {
-        printf("Escriba la dificultad del reto que acaba de escribir: \n ");
+        printf("Escriba la dificultad del reto que acaba de escribir (del 1 al 5): \n ");
         scanf("%d", &reto.dificultad);
     } while (reto.dificultad != 1 && reto.dificultad != 2 && reto.dificultad != 3 && reto.dificultad != 4 && reto.dificultad != 5);
 
@@ -349,4 +349,77 @@ void guardarEnFichero(TABB A, char* archivo){
     guardarPreorden(A, fp);
     fclose(fp);
     
+}
+
+void nuevosRetos(TABB *A) {
+    TIPOELEMENTOABB creador;
+    TIPOELEMENTOCOLA reto;
+
+
+    printf("Alias del creador: ");
+    scanf(" %19[^\n]", creador.alias);
+
+    if (!esMiembroAbb(*A, creador)) {
+        printf("No existe ningun creador con el alias %s.\n", creador.alias);
+        return;
+    }
+
+    buscarNodoAbb(*A, creador.alias, &creador);
+
+
+
+    printf("Escriba el nombre del reto, si quiere dejar de escribir retos ponga fin: \n ");
+    scanf(" %30[^\n]", reto.titulo);
+    
+
+    while (strcmp(reto.titulo, "fin") != 0) {
+        do {
+        printf("Escriba la dificultad del reto que acaba de escribir (del 1 al 5): \n ");
+        scanf("%d", &reto.dificultad);
+    } while (reto.dificultad != 1 && reto.dificultad != 2 && reto.dificultad != 3 && reto.dificultad != 4 && reto.dificultad != 5);
+
+        insertarCola(&creador.cola_retos, reto);
+
+        printf("Nombre del reto (\"fin\" para terminar): ");
+        scanf(" %30[^\n]", reto.titulo);
+    }
+
+    modificarElementoAbb(*A, creador);
+
+}
+
+
+void completarReto(TABB *A) {
+    TIPOELEMENTOABB creador;
+    TIPOELEMENTOCOLA reto;
+
+    printf("Alias del creador: ");
+    scanf(" %19[^\n]", creador.alias);
+
+    if (!esMiembroAbb(*A, creador)) {
+        printf("No existe ningun creador con el alias %s.\n", creador.alias);
+        return;
+    }
+
+    buscarNodoAbb(*A, creador.alias, &creador);
+
+    if (esVaciaCola(creador.cola_retos)) {
+        printf("%s no tiene retos pendientes.\n", creador.alias);
+        return;
+    }
+
+    // El reto que toca es el primero de la cola
+    reto = primeroCola(creador.cola_retos);
+    printf("Reto completado: %s (dificultad: %d)\n", reto.titulo, reto.dificultad);
+    suprimirCola(&creador.cola_retos);
+
+    // Mostramos el siguiente, si queda alguno
+    if (esVaciaCola(creador.cola_retos)) {
+        printf("%s ha completado todos sus retos.\n", creador.alias);
+    } else {
+        reto = primeroCola(creador.cola_retos);
+        printf("Siguiente reto: %s (dificultad: %d)\n", reto.titulo, reto.dificultad);
+    }
+
+    modificarElementoAbb(*A, creador);
 }

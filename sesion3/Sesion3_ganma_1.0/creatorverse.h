@@ -34,5 +34,9 @@ void eliminarCreador(TABB *A);
 
 void guardarEnFichero(TABB A, char* archivo);
 
+void nuevosRetos(TABB *A);
+
+void completarReto(TABB *A);
+
 #endif /* CREATORVERSE_H */
 

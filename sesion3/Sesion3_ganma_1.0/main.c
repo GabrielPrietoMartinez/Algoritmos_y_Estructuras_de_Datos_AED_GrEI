@@ -15,6 +15,8 @@ int main(int argc, char *argv[]) {
         printf("A. Anhadir creador\n");
         printf("L. Listar creadores\n");
         printf("E. Eliminar creador\n");
+        printf("R. Anhadir nuevos retos\n");
+        printf("C. Completar siguiente reto\n");
         printf("S. Salir\n");
         printf("Seleccione una opcion: ");
         
@@ -30,6 +32,12 @@ int main(int argc, char *argv[]) {
                 break;
             case 'E':
                 eliminarCreador(&base_datos);
+                break;
+            case 'R':
+                nuevosRetos(&base_datos);
+                break;
+            case 'C':
+                completarReto(&base_datos);
                 break;
             case 'S':
                 printf("\nGracias por usar nuestro programa.\n");
