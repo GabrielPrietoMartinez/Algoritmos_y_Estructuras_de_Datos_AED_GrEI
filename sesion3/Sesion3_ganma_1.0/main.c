@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "creatorverse.h"
+#include <string.h>
 
 int main(int argc, char *argv[]) {
     TABB base_datos; 
@@ -16,6 +17,7 @@ int main(int argc, char *argv[]) {
         printf("L. Listar creadores\n");
         printf("E. Eliminar creador\n");
         printf("N. Anhadir nuevos retos\n");
+        printf("B. Buscar Creador\n");
         printf("C. Completar siguiente reto\n");
         printf("D. Buscar reto más dificil\n");
         printf("T. Buscar creador o creadores con mayor numero de retos\n");
@@ -63,11 +65,18 @@ int main(int argc, char *argv[]) {
         }
     } while (opcion != 'S');
 
-    //guardamos las modificaciones en el fichero
-    guardarEnFichero(base_datos, argv[2]);
+        // Si se cargo un fichero con -f, guardamos en ese; si no, preguntamos el nombre
+    char nombre[100];
+    if (argc >= 3 && strcmp(argv[1], "-f") == 0) {
+        strcpy(nombre, argv[2]);
+    } else {
+        printf("Nombre del fichero donde guardar: ");
+        scanf("%99s", nombre);
+    }
+    guardarEnFichero(base_datos, nombre);
 
     // 3. Liberacion de memoria de todo el arbol al salir
-    //destruir_creadores(&base_datos);
+    destruirAbb(&base_datos);
 
     return 0;
 }
