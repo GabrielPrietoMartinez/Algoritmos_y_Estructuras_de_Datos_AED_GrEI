@@ -423,3 +423,95 @@ void completarReto(TABB *A) {
 
     modificarElementoAbb(*A, creador);
 }
+
+
+void buscarCreador(TABB A) {
+    TIPOELEMENTOABB creador;
+
+    printf("Alias del creador a buscar: ");
+    scanf(" %19[^\n]", creador.alias);
+
+    if (!esMiembroAbb(A, creador)) {
+        printf("No existe ningun creador con el alias %s.\n", creador.alias);
+        return;
+    }
+
+    buscarNodoAbb(A, creador.alias, &creador);
+    _imprimirCreador(creador);
+}
+
+
+
+
+void _acumularMaximos(TABB A, TCOLA cola, int *dificultad){
+    TIPOELEMENTOABB elem_abb_aux;
+    TIPOELEMENTOCOLA reto, reto_guardado;
+    TCOLA aux;
+
+    if(esAbbVacio(A)){
+        return;
+    }
+
+    leerElementoAbb(A, &elem_abb_aux);
+    crearCola(&aux); // solo para recorrer los retos de este creador
+
+    while (!esVaciaCola(elem_abb_aux.cola_retos)) {
+        reto = primeroCola(elem_abb_aux.cola_retos);
+
+        // Nuevo maximo: tiramos los retos que teniamos guardados
+        if (reto.dificultad > *dificultad) {
+            *dificultad = reto.dificultad;
+            while (!esVaciaCola(cola)) {
+                suprimirCola(&cola);
+            }
+        }
+
+        // Si llega al maximo, lo guardamos con el alias delante
+        if (reto.dificultad == *dificultad) {
+            reto_guardado.dificultad = reto.dificultad;
+            snprintf(reto_guardado.titulo, sizeof(reto_guardado.titulo), "%s: %s", elem_abb_aux.alias, reto.titulo);
+            insertarCola(&cola, reto_guardado);
+        }
+
+        insertarCola(&aux, reto);
+        suprimirCola(&elem_abb_aux.cola_retos);
+    }
+
+    // Devolvemos los retos a su cola en el mismo orden
+    while (!esVaciaCola(aux)) {
+        insertarCola(&elem_abb_aux.cola_retos, primeroCola(aux));
+        suprimirCola(&aux);
+    }
+    destruirCola(&aux);
+
+    _acumularMaximos(izqAbb(A), cola, dificultad);
+    _acumularMaximos(derAbb(A), cola, dificultad);
+}
+
+
+
+void buscarRetoMasDificil(TABB A){
+    TCOLA cola;
+    crearCola(&cola);
+    int dificultad_max = 0;
+
+    if(esAbbVacio(A)){
+        printf("El arbol esta vacio, por tanto no hay retos.\n");
+        destruirCola(&cola);
+        return;
+    }
+
+    _acumularMaximos(A, cola, &dificultad_max);
+
+    if (esVaciaCola(cola)) {
+        printf("Ningun creador tiene retos.\n");
+    } else {
+        printf("Retos de dificultad maxima (%d):\n", dificultad_max);
+        while (!esVaciaCola(cola)) {
+            printf("  %s\n", primeroCola(cola).titulo);
+            suprimirCola(&cola);
+        }
+    }
+
+    destruirCola(&cola);
+}

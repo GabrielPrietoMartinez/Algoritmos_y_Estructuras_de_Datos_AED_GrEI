@@ -38,5 +38,9 @@ void nuevosRetos(TABB *A);
 
 void completarReto(TABB *A);
 
+void buscarCreador(TABB A);
+
+void buscarRetoMasDificil(TABB A);
+
 #endif /* CREATORVERSE_H */
 
