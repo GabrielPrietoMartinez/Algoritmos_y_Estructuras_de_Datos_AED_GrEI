@@ -18,6 +18,8 @@ int main(int argc, char *argv[]) {
         printf("N. Anhadir nuevos retos\n");
         printf("C. Completar siguiente reto\n");
         printf("D. Buscar reto más dificil\n");
+        printf("T. Buscar creador o creadores con mayor numero de retos\n");
+        printf("M. Modificar Creador\n");
         printf("S. Salir\n");
         printf("Seleccione una opcion: ");
         
@@ -46,6 +48,12 @@ int main(int argc, char *argv[]) {
             case 'D':
                 buscarRetoMasDificil(base_datos);
                 break;
+            case 'T':
+                buscarCreadoresMasRetos(base_datos);
+                break;
+            case 'M':
+                modificarCreador(&base_datos);
+                break;
             case 'S':
                 printf("\nGracias por usar nuestro programa.\n");
                 break;
@@ -59,7 +67,7 @@ int main(int argc, char *argv[]) {
     guardarEnFichero(base_datos, argv[2]);
 
     // 3. Liberacion de memoria de todo el arbol al salir
-   // destruir_creadores(&base_datos);
+    //destruir_creadores(&base_datos);
 
     return 0;
 }

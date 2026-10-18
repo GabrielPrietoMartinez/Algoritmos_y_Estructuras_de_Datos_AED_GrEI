@@ -42,5 +42,9 @@ void buscarCreador(TABB A);
 
 void buscarRetoMasDificil(TABB A);
 
+void buscarCreadoresMasRetos(TABB A);
+
+void modificarCreador(TABB *A);
+
 #endif /* CREATORVERSE_H */
 

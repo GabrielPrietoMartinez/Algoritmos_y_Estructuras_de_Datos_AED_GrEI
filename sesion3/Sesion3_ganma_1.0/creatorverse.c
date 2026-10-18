@@ -295,6 +295,10 @@ void _strip_line(char *linea) {
     linea[strcspn(linea, "\r\n")] = 0;
 }
 
+///////////////////////////////////////////////////////
+//FUNCIONES PRIVADAS
+//////////////////////////////////////////////
+
 
 void escribirRetos(FILE *fp, TCOLA cola){
     TIPOELEMENTOCOLA reto;
@@ -323,6 +327,7 @@ void escribirRetos(FILE *fp, TCOLA cola){
 
 
 }
+
 
 
 void guardarPreorden(TABB A, FILE *fp) {
@@ -514,4 +519,154 @@ void buscarRetoMasDificil(TABB A){
     }
 
     destruirCola(&cola);
+}
+
+
+
+// Cuenta los retos de una cola sin cambiarla
+int _contarRetos(TCOLA cola){
+    TCOLA aux;
+    int n = 0;
+
+    crearCola(&aux);
+    while (!esVaciaCola(cola)) {
+        insertarCola(&aux, primeroCola(cola));
+        suprimirCola(&cola);
+        n++;
+    }
+
+    // Devolvemos los retos a su cola en el mismo orden
+    while (!esVaciaCola(aux)) {
+        insertarCola(&cola, primeroCola(aux));
+        suprimirCola(&aux);
+    }
+    destruirCola(&aux);
+
+    return n;
+
+}
+
+// Devuelve el mayor numero de retos que tiene algun creador del arbol
+int _maxRetos(TABB A){
+    TIPOELEMENTOABB elem_abb_aux;
+    int max, max_izq, max_der;
+
+    if(esAbbVacio(A)){
+        return 0;
+    }
+
+    leerElementoAbb(A, &elem_abb_aux);
+    max = _contarRetos(elem_abb_aux.cola_retos);
+    max_izq = _maxRetos(izqAbb(A));
+    max_der = _maxRetos(derAbb(A));
+
+    if (max_izq > max){ 
+        max = max_izq;
+    }
+    if (max_der > max) {
+        max = max_der;
+    }
+    return max;
+}
+
+// Imprime los creadores que tienen exactamente n retos
+void _imprimirCreadoresConRetos(TABB A, int n){
+    TIPOELEMENTOABB elem_abb_aux;
+
+    if(esAbbVacio(A)){
+        return;
+    }
+
+    leerElementoAbb(A, &elem_abb_aux);
+    if (_contarRetos(elem_abb_aux.cola_retos) == n) {
+        printf("  %s\n", elem_abb_aux.alias);
+    }
+    _imprimirCreadoresConRetos(derAbb(A), n);
+    _imprimirCreadoresConRetos(izqAbb(A), n);
+}
+
+void buscarCreadoresMasRetos(TABB A){
+    int max = _maxRetos(A);
+
+    if (max == 0) {
+        printf("Ningun creador tiene retos pendientes.\n");
+        return;
+    }
+
+    printf("Creadores con mas retos pendientes (%d):\n", max);
+    _imprimirCreadoresConRetos(A, max);
+}
+
+
+
+void modificarCreador(TABB *A){
+    TIPOELEMENTOABB creador, buscado, sin_cola;
+    char opcion;
+    
+
+    printf("Alias del creador a modificar: ");
+    scanf(" %19[^\n]", creador.alias);
+
+    if (!esMiembroAbb(*A, creador)) {
+        printf("No existe ningun creador con el alias %s.\n", creador.alias);
+        return;
+    }
+    buscarNodoAbb(*A, creador.alias, &creador);
+
+    printf("1. Alias\n2. Categoria\n3. Colectivo\n4. Seguidores\n5. Verificado\n6. Descripcion\n");
+    printf("Campo a modificar: ");
+    scanf(" %c", &opcion);
+
+    switch (opcion) {
+        case '1':
+            printf("Nuevo alias: ");
+            scanf(" %19[^\n]", buscado.alias);
+
+            if (esMiembroAbb(*A, buscado)) {
+            printf("Ya existe un creador con el alias %s.\n", buscado.alias);
+            return;
+             }
+
+            // Quitamos la cola del nodo viejo para que suprimir no la borre
+            sin_cola = creador;
+            sin_cola.cola_retos = NULL;
+            modificarElementoAbb(*A, sin_cola);
+            suprimirElementoAbb(A, creador);
+
+            // El creador nuevo se lleva la cola original
+            strcpy(creador.alias, buscado.alias);
+            insertarElementoAbb(A, creador);
+            break;
+        case '2':
+            printf("Nueva categoria: ");
+            scanf("%u", &creador.categoria);
+            modificarElementoAbb(*A, creador);
+            break;
+        case '3':
+            printf("Nuevo colectivo: ");
+            scanf(" %19[^\n]", creador.colectivo);
+            modificarElementoAbb(*A, creador);
+            break;
+        case '4':
+            printf("Nuevos seguidores: ");
+            scanf("%ld", &creador.seguidores);
+            modificarElementoAbb(*A, creador);
+            break;
+        case '5':
+            do {
+                printf("Verificado? (1 = si, 0 = no): ");
+                scanf("%d", &creador.verificado);
+            } while (creador.verificado != 0 && creador.verificado != 1);
+            modificarElementoAbb(*A, creador);
+            break;
+        case '6':
+            printf("Nueva descripcion: ");
+            scanf(" %99[^\n]", creador.descripcion);
+            modificarElementoAbb(*A, creador);
+            break;
+        default:
+            printf("Opcion no valida.\n");
+            return;
+    }
+    printf("Creador modificado.\n");
 }
