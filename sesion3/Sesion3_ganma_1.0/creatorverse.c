@@ -100,7 +100,7 @@ void anhadirCreador(TABB *A){
     TIPOELEMENTOCOLA reto;
 
     printf("Alias: ");
-    scanf(" %[^\n]", creador.alias);
+    scanf(" %19[^\n]", creador.alias);
 
     // Si el alias ya está en el árbol, no lo añadimos otra vez
     if (esMiembroAbb(*A, creador)) {
@@ -112,7 +112,7 @@ void anhadirCreador(TABB *A){
     scanf("%u", &creador.categoria);
 
     printf("Colectivo: ");
-    scanf(" %[^\n]", creador.colectivo);
+    scanf(" %19[^\n]", creador.colectivo);
 
     printf("Seguidores: ");
     scanf("%ld", &creador.seguidores);
@@ -124,7 +124,7 @@ void anhadirCreador(TABB *A){
     } while (creador.verificado != 0 && creador.verificado != 1);
 
     printf("Descripcion: ");
-    scanf(" %[^\n]", creador.descripcion);
+    scanf(" %99[^\n]", creador.descripcion);
 
     // Cola de retos: se van añadiendo hasta escribir "fin"
     crearCola(&creador.cola_retos);
@@ -214,7 +214,7 @@ void eliminarCreador(TABB *A) {
     TIPOELEMENTOABB creador;
 
     printf("Alias del creador a eliminar: ");
-    scanf(" %[^\n]", creador.alias);
+    scanf(" %19[^\n]", creador.alias);
 
     if (esMiembroAbb(*A, creador)) {
         // Cogemos el creador completo para tener su cola de retos
